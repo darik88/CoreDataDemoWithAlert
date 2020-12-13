@@ -63,20 +63,6 @@ class TaskListViewController: UITableViewController {
         showEditAlert(with: "Edit Task", and: "What do you want to edit?", at: indexPath)
     }
     
-    private func edit(taskName: String, indexPath: IndexPath) {
-
-        tasks[indexPath.row].name = taskName
-        tableView.reloadRows(at: [indexPath], with: .automatic)
-
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch let error {
-                print(error)
-            }
-        }
-    }
-    
     // MARK: - TableViewDataSource & TableViewDelegate
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -145,9 +131,9 @@ extension TaskListViewController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
-            guard let task = alert.textFields?.first?.text, !task.isEmpty else { return }
-            self.edit(taskName: task, indexPath: indexPath)
-            self.tasks[indexPath.row].name = task
+            let taskToEdit = self.tasks[indexPath.row]
+            guard let taskName = alert.textFields?.first?.text, !taskName.isEmpty else { return }
+            StorageManager.shared.edit(task: taskToEdit, with: taskName, at: indexPath)
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
         

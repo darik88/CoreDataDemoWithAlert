@@ -47,7 +47,6 @@ class StorageManager {
         guard let task = NSManagedObject(entity: entityDescription, insertInto: context) as? Task else { return }
         
 //         let task = Task(context: context)
-                
         task.name = taskName
         completion(task)
         saveContext()
@@ -58,6 +57,13 @@ class StorageManager {
         context.delete(taskName)
         saveContext()
     }
+    
+    
+    func edit(task: Task, with newTaskName: String, at indexPath: IndexPath) {
+        task.name = newTaskName
+        saveContext()
+    }
+    
     
     func saveContext () {
         let context = persistentContainer.viewContext
